@@ -1,6 +1,6 @@
 {
-  "name": "Weather AP5PM",
-  "short_name": "Weather",
+  "name": "Ippy AP5PM",
+  "short_name": "Ippy",
   "theme_color": "#3880ff",
   "background_color": "#ffffff",
   "display": "standalone",
