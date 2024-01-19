@@ -14,11 +14,46 @@
   </ion-header>
 
   <ion-item>
-    <ion-input label="IP:" placeholder="Search IP adress"></ion-input>
+    <ion-input type="text" id="input" [(ngModel)]="inputValue" label="IP:" placeholder="Search IP adress"></ion-input>
   </ion-item>
   <br>
 
   <ion-button color="success" (click)="add($event)">
     Search
   </ion-button>
+
+  <ng-container *ngIf="result">
+    <ion-list>
+      <ion-item>
+        <ion-label>Country name:</ion-label>
+        <ion-note slot="end">{{result.country_name}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>City:</ion-label>
+        <ion-note slot="end">{{result.city}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Region:</ion-label>
+        <ion-note slot="end">{{result.region}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Country code:</ion-label>
+        <ion-note slot="end">{{result.country_code_iso3}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <!-- Využívají se sloty, skrze rychlejší formátování bez nutnosti dalšího CSS nebo grid systému -->
+        <ion-label>Timezone:</ion-label>
+        <ion-note slot="end">{{result.timezone}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Is part of EU:</ion-label>
+        <!-- jako většina prvků i zde lze aplikovat theming z ionicu -->
+        <ion-note slot="end">{{result.in_eu}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Local currency:</ion-label>
+        <ion-note slot="end">{{result.currency_name}}</ion-note>
+      </ion-item>
+    </ion-list>
+  </ng-container>
 </ion-content>
