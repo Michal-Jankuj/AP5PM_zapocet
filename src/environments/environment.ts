@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://api.openweathermap.org/data/2.5",
-  apiToken: "6c58db1498af675c680ae29e2cf380db"
+  baseUrl: "https://ipapi.co/",
+  //apiToken: "7454ed62344532"
 };
 
 /*

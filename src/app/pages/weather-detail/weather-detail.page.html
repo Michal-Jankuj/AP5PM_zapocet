@@ -6,131 +6,41 @@
     <ion-buttons slot="start">
       <ion-back-button text="Home"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{weather.name}}</ion-title>
-    <!-- Zobrazuji ikonu jako avatar - fotku uživatelského profilu, proč ne -->
-    <ion-avatar slot="end">
-      <img [src]="'https://openweathermap.org/img/wn/'+ weather.weather[0].icon +'@2x.png'" alt="Wether icon">
-    </ion-avatar>
+    <ion-title>{{ipModel.ip}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">{{weather.name}}</ion-title>
+      <ion-title size="large">{{ipModel.country_name}}</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <!-- Nějaký popis se vždy hodí -->
   <div class="ion-padding">
-    <ion-text>Actual weather in {{weather.name}} is {{weather.weather[0].description}}</ion-text>
+    <ion-text>The ip adress is in {{ipModel.city}}, {{ipModel.region}}</ion-text>
   </div>
 
-  <!-- Soupis základních údajů o počasí -->
+  <!-- Soupis základních údajů -->
   <ion-list>
     <ion-item>
+      <ion-label>Country code:</ion-label>
+      <ion-note slot="end">{{ipModel.country_code_iso3}}</ion-note>
+    </ion-item>
+    <ion-item>
       <!-- Využívají se sloty, skrze rychlejší formátování bez nutnosti dalšího CSS nebo grid systému -->
-      <ion-icon aria-hidden="true" name="thermometer-outline" slot="start"></ion-icon>
-      <ion-label>Feels like</ion-label>
-      <ion-note slot="end">{{weather.main.feels_like}} ℃</ion-note>
+      <ion-label>Timezone:</ion-label>
+      <ion-note slot="end">{{ipModel.timezone}}</ion-note>
     </ion-item>
     <ion-item>
-      <ion-icon aria-hidden="true" name="thermometer-outline" slot="start"></ion-icon>
-      <ion-label>Actual temperature</ion-label>
+      <ion-label>Is part of EU:</ion-label>
       <!-- jako většina prvků i zde lze aplikovat theming z ionicu -->
-      <ion-note slot="end" color="dark">{{weather.main.temp}} ℃</ion-note>
+      <ion-note slot="end">{{ipModel.in_eu}}</ion-note>
     </ion-item>
     <ion-item>
-      <ion-icon aria-hidden="true" name="thermometer-outline" slot="start"></ion-icon>
-      <ion-label>Max temperature</ion-label>
-      <ion-note slot="end" color="warning">{{weather.main.temp_max}} ℃</ion-note>
-    </ion-item>
-    <ion-item>
-      <ion-icon aria-hidden="true" name="thermometer-outline" slot="start"></ion-icon>
-      <ion-label>Min temperature</ion-label>
-      <ion-note slot="end" color="primary">{{weather.main.temp_min}} ℃</ion-note>
+      <ion-label>Local currency:</ion-label>
+      <ion-note slot="end">{{ipModel.currency_name}}</ion-note>
     </ion-item>
   </ion-list>
-
-  <!-- Vytvářím vlastní grid systém (z ionicu) pro zobrazení karet -->
-  <!-- Android zobrazení v pořádku -->
-  <!-- iOS zobrazení by chtělo ještě trochu doladit skrze vlastní CSS -->
-  <ion-row>
-    <ion-col class="ion-no-padding" size="6">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>
-            <ion-icon name="sunny-outline"></ion-icon>
-            <span>Sunset</span>
-          </ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-          <!-- Jelikož mi sunset vrací číslo - pouze čas (ISO norma) mohu jej skrze pipe date přímo naformátovat -->
-          {{weather.sys.sunset | date: "hh:mm"}}
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-    <ion-col class="ion-no-padding" size="6">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>
-            <ion-icon name="moon-outline"></ion-icon>
-            <span>Sunrise</span>
-          </ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-          {{weather.sys.sunrise | date: "hh:mm"}}
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col class="ion-no-padding" size="6">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>
-            <ion-icon name="compass-outline"></ion-icon>
-            <span>Wind</span>
-          </ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content class="ion-no-padding">
-          <ion-list>
-            <ion-item>
-              Deg: {{weather.wind.deg}}
-            </ion-item>
-            <ion-item>
-              Gust: {{weather.wind.gust}}
-            </ion-item>
-            <ion-item lines="none">
-              Speed: {{weather.wind.speed}}
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-    <ion-col class="ion-no-padding" size="6">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>
-            <ion-icon name="water-outline"></ion-icon>
-            <span>Humidity & Pressure</span>
-          </ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content class="ion-no-padding">
-          <ion-list>
-            <ion-item>
-              Humidity: {{weather.main.humidity}}%
-            </ion-item>
-            <ion-item lines="none">
-              Pressure: {{weather.main.pressure}} hPa
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-  </ion-row>
 </ion-content>

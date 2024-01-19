@@ -26,7 +26,7 @@
   <!-- formulář, dynamické měnění validačních pravidel, masek ... -->
   <!-- V našem případě je použit formulář pro práci se zatrháváním míst pro zobrazení na hlavní stránce -->
   <ion-list [formGroup]="form">
-    <!-- *ngFor = iterační cyklus for. Cyklý places v každé iteraci vytvoří place a nastaví proměnnou 'i' na danný index iterace. -->
+    <!-- *ngFor = iterační cyklus for. Cyklý Adresses v každé iteraci vytvoří place a nastaví proměnnou 'i' na danný index iterace. -->
     <!-- proměnnou place, lze následně použít uvnitř cyklu -->
     <!-- cyklý se vždy prvek, v našem případě ion-item -->
     <ion-item *ngFor="let place of places; let i = index">
@@ -35,7 +35,7 @@
       <!-- formControlName = název klíče uvnitř formGroup (máme ch1, ch2...) viz controller a vytváření this.form = this.fb.grou(...) -->
       <ion-checkbox slot="start" [value]="i" formControlName="ch{{i + 1}}"></ion-checkbox>
       <!-- Propsání dat lidsky pro uživatele - místo co che zobrazit, třeba Praha, Berlín... -->
-      <ion-label>{{place.name}}</ion-label>
+      <ion-label>{{place.ip}} - {{place.country_code}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

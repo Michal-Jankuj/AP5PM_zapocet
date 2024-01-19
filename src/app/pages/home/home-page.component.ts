@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
-import {WeatherApiService} from "../../services/weather-api/weather-api.service";
+import {IpApiService} from "../../services/ip-api/ip-api.service";
 import {firstValueFrom, Observable} from "rxjs";
-import {Weather} from "../../models/weather.model";
+import {IPmodel} from "../../models/ip.model";
 import {ModalController} from "@ionic/angular";
 import {SettingsPage} from "../settings/settings.page";
-import {PlacesService} from "../../services/places/places.service";
+import {AdressesService} from "../../services/Adresses/adresses.service";
 
 @Component({
   selector: 'app-home',
@@ -30,35 +30,34 @@ export class HomePage {
    *
    * @deprecated Již se využívá weathers$
    */
-  weather$: Observable<Weather>;
+  ip$: Observable<IPmodel>;
 
   /**
    * Drží pole asychroných requestů (pro každé místo je jeden)
    * Není to nejefektivnější řešení, ale pro tento případ je dostačující
    */
-  weathers$: Observable<Weather>[] = [];
+  ips$: Observable<IPmodel>[] = [];
 
   // Toto by bylo lepší řešení, avšak naše API neumí vrátit v jednom requestu pole počasí pro různá místa
   // Příklad tohoto byl GET (z CRUD) modelu /users, který by vrátil pole uživatelů
-  // weathers$: Observable<Weather[]>;
 
   constructor(
     // Vložím servisku pro Dependency Injection (má vlastní serviska)
     // private je doporučeno pro koncové třídy,
     //  pokud by se jednalo o abstraktní třídu, nebo třídu určenou k dědění použil bych public nebo protected
-    private weatherApiService: WeatherApiService,
+    private ipApiService: IpApiService,
     private modalCtrl: ModalController,
-    private placesService: PlacesService // přidání servisky pro získání nastavení míst
+    private adressesService: AdressesService // přidání servisky pro získání nastavení míst
   ) {
     // načtení počasí
-    // načte data z placesService (využívám na více místech, proto je to funkce)
-    this.initWeather();
+    // načte data z adressesService (využívám na více místech, proto je to funkce)
+    this.initIP();
 
     // nastavým výstup funkce při načtení stránky (pozor, před načtením view)
     // zde se žádná data nezískávají!!! data se získají až ve view pomocí | async (pipy async)
     // až pipa async provede onen .subscribe(...), který získá data
-    // zde se pouze předavají stejné datové typy getByGeo$(...): Observable<...> >>> this.weather$: Observable<any>
-    this.weather$ = this.weatherApiService.getByGeo$(0, 0)
+    // zde se pouze předavají stejné datové typy getByIP$(...): Observable<...> >>> this.ip$: Observable<any>
+    this.ip$ = this.ipApiService.getByIP$("8.8.8.8")
   }
 
 
@@ -68,16 +67,16 @@ export class HomePage {
    *
    * @private
    */
-  private async initWeather() {
+  private async initIP() {
     // reset pole na prázdné
-    this.weathers$ = [];
-    // získání všech places ze servisky (jsou vždy aktuální)
-    // firstValueFrom = získá první (poslední přidaná) data do observable patternu tedy proměnné places$
-    const places = await firstValueFrom(this.placesService.places$)
+    this.ips$ = [];
+    // získání všech Adresses ze servisky (jsou vždy aktuální)
+    // firstValueFrom = získá první (poslední přidaná) data do observable patternu tedy proměnné Adresses$
+    const places = await firstValueFrom(this.adressesService.adresses$)
     // firstValueFrom je použití místo .subscribe, data chci totiž jen jedenkrát
-    // Pokud bych použil .subscribe došlo by v každém volání funkce initWeather (tedy po zavření modalu)
+    // Pokud bych použil .subscribe došlo by v každém volání funkce initIP (tedy po zavření modalu)
     // k vytvoření nového odběratele až do n odběratelů. Následkem čeho by se přehltila pamět a aplikace by spadla.
-    // this.placesService.places$.subscribe(places => {
+    // this.adressesService.Adresses$.subscribe(Adresses => {
       places.forEach(place => {
         // kontrola jestli se má zobrazovat na domovské obrazovce nebo ne
         if (place.homepage) {
@@ -85,11 +84,11 @@ export class HomePage {
           // vkládám Observable objekt (pattern)
           // na view pak používám | async stejně jako v případě získání jedné polohy
           // rozdíl je že to celé běží v cyklu, který je dynamický a reaguje na změny pole
-          this.weathers$.push(
-            this.weatherApiService.getByGeo$(place.latitude, place.longitude)
+          this.ips$.push(
+            this.ipApiService.getByIP$(place.ip)
           )
           // Lepší jednorádkový zápis
-          // this.weathers$.push(this.weatherApiService.getByGeo$(place.latitude, place.longitude))
+          // this.weathers$.push(this.ipApiService.getByGeo$(place.latitude, place.longitude))
         }
      // }); //původní část z .subscribe (ukončovací)
     })
@@ -102,9 +101,9 @@ export class HomePage {
    * @deprecated Tento způsob není doporučován, lepší možnost je použít weather$ s kombinací s pipou async
    */
   fetchData() {
-    // získám data na pozici GEO 0,0 pomocí metody .subscribe(...)
+    // získám data na adrese 8.8.8.8 pomocí metody .subscribe(...)
     // používám servisku, které umožňuje přenášet logiku skrze Dependency Injection (DI)
-    this.weatherApiService.getByGeo$(0, 0).subscribe(data => {
+    this.ipApiService.getByIP$("8.8.8.8").subscribe(data => {
       // data získaná z requestu předám to proměnné this.data abych je mohl vypsat ve view (nahradím původní objekt uložený v data)
       this.data = data;
     })
@@ -132,14 +131,14 @@ export class HomePage {
     modal.onWillDismiss().then(_ => {
       // Potom co je zavřen modal (před tím než se spustí animace)
       // je znovu volán init weather, který resetuje data a znovu vše nastavuje podle aktuálního stavu
-      this.initWeather();
+      this.initIP();
     });
 
     // alternativní zápis
     // pozor na použití await, který ale nikdy nenastane, zbytečně se může plnit paměť zařízení a vše pak být pomalejší
     // .then() je v tomto případě výhodnější
     // await modal.onWillDismiss();
-    // this.initWeather();
+    // this.initIP();
 
   }
 
@@ -147,9 +146,9 @@ export class HomePage {
    * Set detail weather data
    *
    * Nastaví detail data skrze servisku dříve, než se otevře routerLink na view
-   * @param weather
+   * @param ip
    */
-  setDetailData(weather: Weather) {
-    this.weatherApiService.detail = weather;
+  setDetailData(ip: IPmodel) {
+    this.ipApiService.detail = ip;
   }
 }

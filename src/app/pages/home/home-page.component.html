@@ -42,48 +42,20 @@
     </div>
   </div>-->
 
-  <!-- Proměnná weather$ obsahuje Observable - což lze získav skrze .subscribe -->
-  <!-- .subscribe (co lze provést na controlleru) je zde nahrazen pomocí pipe async -->
-  <!-- Pipe async lze použít v podmínce (získá asynchroní data), jelikžo provede .subscribe na pozadí -->
-  <!-- Dokud se data z weather$ nevrací, je vraceno false, v momentě kdy se data získají ze serveru, vrátí se data -->
-  <!-- Data jsou vloženy skrze vlastnost *ngIf do proměnné let weather, kteoru mohu použít dále v kódu (pouze uvnitř podmínky) -->
-  <!-- Data vloženy do proměnné let weather, přebírají stejný datový typ. weather$: Observable<any> >>> weather: any -->
-  <!-- Pipe je vnitře podobná jako serviska - jedná se o podobné řešení -->
-  <!--<div *ngIf="weather$ | async; let weather">-->
-    <!-- Jelikož že weather datový typ any mohu libovolně choti strukturou -->
-    <!-- strukturu znám skrze request získaný v prohlížeče - bez modelu si musím pamatovat kompletní strukturu -->
-    <!--{{weather.weather[0].main}}
-  </div>-->
-
-  <!-- Ukázka vložení dat z nastavení -->
   <div>
-    <!--<h2>Toto jsou data z nastavení</h2>-->
-
     <!-- Dynamické vycyklení pole obsahující asychroní requesty Observable objekt (pattern) -->
     <!-- ng-container slouží pro možnost zrušení "zadivování", na DOM se nepropisuje -->
-    <ng-container *ngFor="let item$ of weathers$">
+    <ng-container *ngFor="let item$ of ips$">
       <!-- Souštění .subscribe a získání dat stejně jako v případě výše -->
-      <ng-container *ngIf="item$ | async; let weather">
+      <ng-container *ngIf="item$ | async; let ip">
         <!-- Použití Ionic designu - ion-card dle oficiální dokumentace-->
         <!-- Angular routerLink otevře stránku detailu > /details - endpoint je zapsaný v app.router-module.ts -->
         <!-- Pomocí metody click (reaguje dříve jak routerLink) předám data do pomocné servisky -->
-        <ion-card routerLink="/detail" (click)="setDetailData(weather)">
+        <ion-card routerLink="/detail" (click)="setDetailData(ip)">
           <ion-card-header>
-            <ion-card-title>{{weather.name}}</ion-card-title>
-            <ion-card-subtitle>{{weather.main.temp}} C</ion-card-subtitle>
+            <ion-card-title>{{ip.ip}}</ion-card-title>
+            <ion-card-subtitle>{{ip.country_name}}</ion-card-subtitle>
           </ion-card-header>
-
-          <ion-card-content>
-            <ion-row class="ion-no-padding">
-              <ion-col class="ion-no-padding" size="6">
-                <img [src]="'https://openweathermap.org/img/wn/'+ weather.weather[0].icon +'@2x.png'" alt="Wether icon">
-              </ion-col>
-              <ion-col class="ion-no-padding ion-text-right" size="6">
-                <div><ion-chip color="danger">{{weather.main.temp_max}} ℃</ion-chip></div>
-                <div><ion-chip color="primary">{{weather.main.temp_min}} ℃</ion-chip></div>
-              </ion-col>
-            </ion-row>
-          </ion-card-content>
         </ion-card>
       </ng-container>
     </ng-container>

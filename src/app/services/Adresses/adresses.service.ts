@@ -3,70 +3,53 @@ import {Preferences} from "@capacitor/preferences";
 import {ReplaySubject} from "rxjs";
 
 /**
- * Model place
+ * Model adress
  *
  * Měl by existovat ve složce models
  * Zde ale dává větší logiku, proto jej nechávám zde
  * Je zde vše více ucelenější
  */
-export interface Place {
-  latitude: number;
-  longitude: number;
-  name: string;
-  homepage: boolean;
+export interface IPplace {
+  ip: string,
+  country_code: string,
+  homepage: boolean
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlacesService {
+export class AdressesService {
 
   /**
    * Základní místa v aplikaci
    *
    * @private
    */
-  private privatePlaces: Place[] = [
+  private importantAdresses:IPplace[] = [
     {
-      latitude: 28.6472799,
-      longitude: 28.6472799,
-      name: 'Dehli, India',
-      homepage: true,
+      ip: "8.8.8.8",
+      country_code: "US",
+      homepage: true
     },
     {
-      latitude: -5.7759362,
-      longitude: 106.1174957,
-      name: 'Jakarta, Indonesia',
-      homepage: false,
+      ip: "208.67.222.222",
+      country_code: "US",
+      homepage: true
     },
     {
-      latitude: 51.5287718,
-      longitude: -0.2416815,
-      name: 'London, UK',
-      homepage: true,
+      ip: "194.195.196.197",
+      country_code: "DE",
+      homepage: false
     },
     {
-      latitude: 40.6976701,
-      longitude: -74.2598666,
-      name: 'New York, USA',
-      homepage: false,
+      ip: "110.120.130.140",
+      country_code: "CN",
+      homepage: false
     },
-    {
-      latitude: 48.8589507,
-      longitude: 2.2770202,
-      name: 'Paris, France',
-      homepage: false,
-    },
-    {
-      latitude: 37.757815,
-      longitude: -122.5076401,
-      name: 'San Francisco, USA',
-      homepage: false,
-    }
   ];
 
   /**
-   * Available places
+   * Available Adresses
    *
    * Setter pro získání míst
    * Uvnitř settrů je možné volat funkce třídy, například init atd...
@@ -77,8 +60,8 @@ export class PlacesService {
    *
    * Již je nepotřebná (použití v předchozím commitu), nechávám jen pro ukázku možného získávání dat uvnitř servisky
    */
-  private get places() {
-    return this.privatePlaces;
+  private get adresses() {
+    return this.importantAdresses;
   }
 
   /**
@@ -87,13 +70,13 @@ export class PlacesService {
    * Subject - je jich nekolik, implementaci volím, dle potřeby, viz oficiální dokumentace
    * @private
    */
-  private privatePlacesSubject = new ReplaySubject<Place[]>(1)
+  private privateAdressSubject = new ReplaySubject<IPplace[]>(1)
 
   /**
    * Drží náš vlastní observable Pattern - proměnnou
    */
-  get places$() {
-    return this.privatePlacesSubject.asObservable();
+  get adresses$() {
+    return this.privateAdressSubject.asObservable();
   }
 
 
@@ -104,13 +87,13 @@ export class PlacesService {
       // pokud data nejsou (třeba aplikace bězí poprvé, musíme rozhodnout)
       if (data.value) {
         // data mám, přeložím zpět ze stringu do pole
-        const places = JSON.parse(data.value)
+        const adresses = JSON.parse(data.value)
         // nastavení nových dat pro všechny odběratele (observable pattern)
-        this.privatePlacesSubject.next(places as Place[])
+        this.privateAdressSubject.next(adresses as IPplace[])
       } else {
         // data nejsou, vložím výchozí data
         // nastavení nových dat pro všechny odběratele (observable pattern)
-        this.privatePlacesSubject.next(this.places)
+        this.privateAdressSubject.next(this.adresses)
       }
     });
 
@@ -128,13 +111,13 @@ export class PlacesService {
    */
   async setHome(index: number, active: boolean) {
     // nastavení zobrazení místa na hlavní stránce
-    this.privatePlaces[index].homepage = active;
+    this.importantAdresses[index].homepage = active;
     // nastavení nových dat pro všechny odběratele (observable pattern)
-    this.privatePlacesSubject.next(this.privatePlaces);
+    this.privateAdressSubject.next(this.importantAdresses);
     // uložení dat do localstorage (využívá vestavěný adapter pattern pro jednotlivé platformy)
     await Preferences.set({
       key: 'places',
-      value: JSON.stringify(this.privatePlaces),
+      value: JSON.stringify(this.importantAdresses),
     });
   }
 }
