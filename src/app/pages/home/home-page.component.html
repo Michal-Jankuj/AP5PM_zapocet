@@ -1,0 +1,91 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Home
+    </ion-title>
+
+    <!-- ion-button slouží jako prvek držící všechny tlačítka uvnitř ion-toolbar -->
+    <!-- [slot] je možnost nastavení zobrazení prvku v pozici v rodičovském prvku -->
+    <!-- [slot] = end - nastavení za titulkem. = start - nastavení před titulkem -->
+    <ion-buttons slot="end">
+      <!-- Tlačítkem otevřu stránku nastavení -->
+      <ion-button (click)="openSettings()">
+        <ion-icon name="cog" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Home</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Tlačítko pro získání dat ruční cestou -->
+  <!-- funkce fetch vloží získané data (async) do proměnné data vypsané níže -->
+  <!--<ion-button color="danger" (click)="fetchData()">
+    Get data from API
+  </ion-button>-->
+
+  <!-- Vypisuji obsah, co obsahuje proměnná data -->
+  <!-- Před zmářknutím tlačítka obsahuje pouze {} - prízdný objekt, proto se níže nacházejí podmínky -->
+  <!--<div>-->
+    <!-- {{data | json}} -->
+    <!--<div *ngIf="data.weather">
+      <div *ngIf="data.weather[0]">
+        <div *ngIf="data.weather[0].main">
+          {{data.weather[0].main}}
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <!-- Proměnná weather$ obsahuje Observable - což lze získav skrze .subscribe -->
+  <!-- .subscribe (co lze provést na controlleru) je zde nahrazen pomocí pipe async -->
+  <!-- Pipe async lze použít v podmínce (získá asynchroní data), jelikžo provede .subscribe na pozadí -->
+  <!-- Dokud se data z weather$ nevrací, je vraceno false, v momentě kdy se data získají ze serveru, vrátí se data -->
+  <!-- Data jsou vloženy skrze vlastnost *ngIf do proměnné let weather, kteoru mohu použít dále v kódu (pouze uvnitř podmínky) -->
+  <!-- Data vloženy do proměnné let weather, přebírají stejný datový typ. weather$: Observable<any> >>> weather: any -->
+  <!-- Pipe je vnitře podobná jako serviska - jedná se o podobné řešení -->
+  <!--<div *ngIf="weather$ | async; let weather">-->
+    <!-- Jelikož že weather datový typ any mohu libovolně choti strukturou -->
+    <!-- strukturu znám skrze request získaný v prohlížeče - bez modelu si musím pamatovat kompletní strukturu -->
+    <!--{{weather.weather[0].main}}
+  </div>-->
+
+  <!-- Ukázka vložení dat z nastavení -->
+  <div>
+    <!--<h2>Toto jsou data z nastavení</h2>-->
+
+    <!-- Dynamické vycyklení pole obsahující asychroní requesty Observable objekt (pattern) -->
+    <!-- ng-container slouží pro možnost zrušení "zadivování", na DOM se nepropisuje -->
+    <ng-container *ngFor="let item$ of weathers$">
+      <!-- Souštění .subscribe a získání dat stejně jako v případě výše -->
+      <ng-container *ngIf="item$ | async; let weather">
+        <!-- Použití Ionic designu - ion-card dle oficiální dokumentace-->
+        <!-- Angular routerLink otevře stránku detailu > /details - endpoint je zapsaný v app.router-module.ts -->
+        <!-- Pomocí metody click (reaguje dříve jak routerLink) předám data do pomocné servisky -->
+        <ion-card routerLink="/detail" (click)="setDetailData(weather)">
+          <ion-card-header>
+            <ion-card-title>{{weather.name}}</ion-card-title>
+            <ion-card-subtitle>{{weather.main.temp}} C</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-row class="ion-no-padding">
+              <ion-col class="ion-no-padding" size="6">
+                <img [src]="'https://openweathermap.org/img/wn/'+ weather.weather[0].icon +'@2x.png'" alt="Wether icon">
+              </ion-col>
+              <ion-col class="ion-no-padding ion-text-right" size="6">
+                <div><ion-chip color="danger">{{weather.main.temp_max}} ℃</ion-chip></div>
+                <div><ion-chip color="primary">{{weather.main.temp_min}} ℃</ion-chip></div>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ng-container>
+    </ng-container>
+  </div>
+</ion-content>

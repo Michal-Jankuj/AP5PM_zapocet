@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Ukázka klikátka
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Ukázka klikátka</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <button (click)="add($event)">Klikni HTML</button>
+
+  <ion-button color="success" (click)="add($event)">
+    Klikni IONIC
+  </ion-button>
+
+  <div>
+    <span>Kliknuto:</span>
+    <span class="ion-padding-start">{{num}}x</span>
+  </div>
+</ion-content>

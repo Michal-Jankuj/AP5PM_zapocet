@@ -1,0 +1,11 @@
+// Přidání vlastní úpravy titulku uvnitř ion-card (SCSS style)
+ion-card-header {
+  span {
+    font-size: 20px;
+  }
+}
+ion-card {
+  &.ios{
+    margin: 5px;
+  }
+}

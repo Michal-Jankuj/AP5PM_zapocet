@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Settings</ion-title>
+
+    <!-- ion-button slouží jako prvek držící všechny tlačítka uvnitř ion-toolbar -->
+    <!-- [slot] je možnost nastavení zobrazení prvku v pozici v rodičovském prvku -->
+    <!-- [slot] = end - nastavení za titulkem. = start - nastavení před titulkem -->
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        Close
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Settings</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- formGroup (vyžaduje import modulu ReactiveFormsModule) - jedná se o nejúčinější nástroj formulářů v Angularu -->
+  <!-- vytvoření struktury držené pomocí objektu FormGroup v proměnné form (v našem případě) nabízí možnosti validace, -->
+  <!-- observable pattern na libovolný prvkek libovolného zanoření, event handlery, dynamické vytváření dalších částí -->
+  <!-- formulář, dynamické měnění validačních pravidel, masek ... -->
+  <!-- V našem případě je použit formulář pro práci se zatrháváním míst pro zobrazení na hlavní stránce -->
+  <ion-list [formGroup]="form">
+    <!-- *ngFor = iterační cyklus for. Cyklý places v každé iteraci vytvoří place a nastaví proměnnou 'i' na danný index iterace. -->
+    <!-- proměnnou place, lze následně použít uvnitř cyklu -->
+    <!-- cyklý se vždy prvek, v našem případě ion-item -->
+    <ion-item *ngFor="let place of places; let i = index">
+      <!-- [slot] opět stejné jako v případě headeru, ale umístuji pozici pro ion-item -->
+      <!-- value je dynamická a drží hodnoty indexů, je zde jen aby byly splněny normy -->
+      <!-- formControlName = název klíče uvnitř formGroup (máme ch1, ch2...) viz controller a vytváření this.form = this.fb.grou(...) -->
+      <ion-checkbox slot="start" [value]="i" formControlName="ch{{i + 1}}"></ion-checkbox>
+      <!-- Propsání dat lidsky pro uživatele - místo co che zobrazit, třeba Praha, Berlín... -->
+      <ion-label>{{place.name}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
